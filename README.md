@@ -1,3 +1,5 @@
+<img width="1024" height="448" alt="Gemini_Generated_Image_npers1npers1nper" src="https://github.com/user-attachments/assets/a1f8ae5b-c9f1-4b22-a22b-18a46c8c2e5c" />
+
 # **Shift Experiment Generator User Guide**
 
 This tool is a Graphical User Interface (GUI) designed to help you construct complex command-line arguments for the `shift_experiment.py` script in the [Distribution Shift Perception Tool](https://github.com/hafeezkhan909/Distribution-Shift-Lane-Perception). It is used for configuring experiments related to **Distribution Shift Lane Perception** without needing to memorize CLI flags.
