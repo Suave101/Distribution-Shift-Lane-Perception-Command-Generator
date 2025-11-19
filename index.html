@@ -87,28 +87,24 @@
                         <div class="card-body">
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Source Dataset (--source)</label>
-                                    <input type="text" class="form-control param-input" name="source" value="CULane">
+                                    <label class="form-label">Source Directory (--source_dir)</label>
+                                    <input type="text" class="form-control param-input" name="source_dir" value="./datasets/CULane">
+                                    <div class="form-text small">Root folder containing source images.</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Target Dataset (--target)</label>
-                                    <input type="text" class="form-control param-input" name="target" value="Curvelanes">
+                                    <label class="form-label">Target Directory (--target_dir)</label>
+                                    <input type="text" class="form-control param-input" name="target_dir" value="./datasets/Curvelanes">
+                                    <div class="form-text small">Root folder containing target images.</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Source Split (--src_split)</label>
-                                    <select class="form-select param-input" name="src_split">
-                                        <option value="train" selected>train</option>
-                                        <option value="valid">valid</option>
-                                        <option value="test">test</option>
-                                    </select>
+                                    <label class="form-label">Source List Path (--source_list_path)</label>
+                                    <input type="text" class="form-control param-input" name="source_list_path" value="./datasets/CULane/list/train.txt">
+                                    <div class="form-text small">Text file with relative paths to source images.</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Target Split (--tgt_split)</label>
-                                    <select class="form-select param-input" name="tgt_split">
-                                        <option value="train">train</option>
-                                        <option value="valid" selected>valid</option>
-                                        <option value="test">test</option>
-                                    </select>
+                                    <label class="form-label">Target List Path (--target_list_path)</label>
+                                    <input type="text" class="form-control param-input" name="target_list_path" value="./datasets/Curvelane/train/train.txt">
+                                    <div class="form-text small">Text file with relative paths to target images.</div>
                                 </div>
                             </div>
                         </div>
@@ -289,11 +285,12 @@
             const allShiftParams = document.querySelectorAll('.shift-param');
 
             // List of standard arguments mapped from input name to CLI flag
+            // UPDATED: Removed old split/dataset name args, added explicit directory/list args
             const argMap = {
-                'source': '--source',
-                'target': '--target',
-                'src_split': '--src_split',
-                'tgt_split': '--tgt_split',
+                'source_dir': '--source_dir',
+                'target_dir': '--target_dir',
+                'source_list_path': '--source_list_path',
+                'target_list_path': '--target_list_path',
                 'src_samples': '--src_samples',
                 'tgt_samples': '--tgt_samples',
                 'num_runs': '--num_runs',
@@ -335,7 +332,6 @@
                     if (element) {
                         if (element.type === 'checkbox') {
                             if (element.checked) {
-                                // Python argparse type=bool usually treats any non-empty string as True
                                 cmd.push(`${flag} True`);
                             }
                         } else if (element.value.trim() !== "") {
