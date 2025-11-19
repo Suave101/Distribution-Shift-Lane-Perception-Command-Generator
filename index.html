@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shift Experiment Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Florida Tech Colors */
+            --fit-crimson: #862633;
+            --fit-gray: #B2B2B2;
+            --fit-dark: #2f2f2f;
+        }
+
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .navbar-custom {
+            background-color: var(--fit-crimson);
+        }
+
+        .card-header-custom {
+            background-color: var(--fit-crimson);
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-fit {
+            background-color: var(--fit-crimson);
+            color: white;
+            border: none;
+        }
+
+        .btn-fit:hover {
+            background-color: #6d1e28;
+            color: white;
+        }
+
+        .form-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--fit-dark);
+        }
+
+        .command-box {
+            background-color: #1e1e1e;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            border-radius: 5px;
+            min-height: 100px;
+            word-break: break-all;
+        }
+
+        .shift-group {
+            border-left: 4px solid var(--fit-crimson);
+            padding-left: 15px;
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 0 5px 5px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom shadow">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-road me-2"></i> Distribution Shift Lane Perception
+            </a>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-lg-8 mb-4">
+                <form id="configForm">
+                    
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header card-header-custom">
+                            <i class="fas fa-database me-2"></i> Dataset Configuration
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Source Dataset (--source)</label>
+                                    <input type="text" class="form-control param-input" name="source" value="Curvelanes">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Target Dataset (--target)</label>
+                                    <input type="text" class="form-control param-input" name="target" value="Curvelanes">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Source Split (--src_split)</label>
+                                    <select class="form-select param-input" name="src_split">
+                                        <option value="train" selected>train</option>
+                                        <option value="valid">valid</option>
+                                        <option value="test">test</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Target Split (--tgt_split)</label>
+                                    <select class="form-select param-input" name="tgt_split">
+                                        <option value="train">train</option>
+                                        <option value="valid" selected>valid</option>
+                                        <option value="test">test</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header card-header-custom">
+                            <i class="fas fa-vial me-2"></i> Sampling & Model
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Source Samples (--src_samples)</label>
+                                    <input type="number" class="form-control param-input" name="src_samples" value="1000">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Target Samples (--tgt_samples)</label>
+                                    <input type="number" class="form-control param-input" name="tgt_samples" value="100">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Num Runs (--num_runs)</label>
+                                    <input type="number" class="form-control param-input" name="num_runs" value="10">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Block Index (--block_idx)</label>
+                                    <input type="number" class="form-control param-input" name="block_idx" value="0">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Seed Base (--seed_base)</label>
+                                    <input type="number" class="form-control param-input" name="seed_base" value="42">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Batch Size (--batch_size)</label>
+                                    <input type="number" class="form-control param-input" name="batch_size" value="16">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Calibration Runs (--num_calib)</label>
+                                    <input type="number" class="form-control param-input" name="num_calib" value="100">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Alpha (--alpha)</label>
+                                    <input type="number" step="0.01" class="form-control param-input" name="alpha" value="0.05">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header card-header-custom">
+                            <i class="fas fa-random me-2"></i> Synthetic Shift Configuration
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">Shift Type (--shift)</label>
+                                <select class="form-select param-input" id="shiftType" name="shift">
+                                    <option value="" selected>None (Cross-Domain Mode)</option>
+                                    <option value="gaussian">Gaussian Noise</option>
+                                    <option value="rotation_shift">Rotation</option>
+                                    <option value="translation_shift">Translation</option>
+                                    <option value="shear_shift">Shear</option>
+                                    <option value="zoom_shift">Zoom</option>
+                                    <option value="horizontal_flip_shift">Horizontal Flip</option>
+                                    <option value="vertical_flip_shift">Vertical Flip</option>
+                                </select>
+                            </div>
+
+                            <div id="shiftParamsContainer" class="shift-group d-none">
+                                
+                                <div class="shift-param d-none" id="param-gaussian">
+                                    <label class="form-label">Standard Deviation (--std)</label>
+                                    <input type="number" step="0.01" class="form-control param-input" name="std" value="0.05">
+                                </div>
+
+                                <div class="shift-param d-none" id="param-rotation_shift">
+                                    <label class="form-label">Rotation Angle (--rotation_angle)</label>
+                                    <input type="number" step="0.1" class="form-control param-input" name="rotation_angle" value="15.0">
+                                </div>
+
+                                <div class="shift-param d-none" id="param-translation_shift">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label class="form-label">Width Shift Frac (--width_shift_frac)</label>
+                                            <input type="number" step="0.01" class="form-control param-input" name="width_shift_frac" value="0.1">
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label">Height Shift Frac (--height_shift_frac)</label>
+                                            <input type="number" step="0.01" class="form-control param-input" name="height_shift_frac" value="0.1">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="shift-param d-none" id="param-shear_shift">
+                                    <label class="form-label">Shear Angle (--shear_angle)</label>
+                                    <input type="number" step="0.1" class="form-control param-input" name="shear_angle" value="10.0">
+                                </div>
+
+                                <div class="shift-param d-none" id="param-zoom_shift">
+                                    <label class="form-label">Zoom Factor (--zoom_factor)</label>
+                                    <input type="number" step="0.01" class="form-control param-input" name="zoom_factor" value="1.25">
+                                </div>
+
+                                <div class="shift-param d-none" id="param-horizontal_flip_shift">
+                                    <span class="text-muted fst-italic">No additional parameters required for Horizontal Flip.</span>
+                                </div>
+                                <div class="shift-param d-none" id="param-vertical_flip_shift">
+                                    <span class="text-muted fst-italic">No additional parameters required for Vertical Flip.</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header card-header-custom">
+                            <i class="fas fa-file-alt me-2"></i> Logging
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Log Directory (--file_location)</label>
+                                    <input type="text" class="form-control param-input" name="file_location" value="logs">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Filename (--file_name)</label>
+                                    <input type="text" class="form-control param-input" name="file_name" value="experiment_results.json">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="sticky-top" style="top: 20px;">
+                    <div class="card shadow-sm">
+                        <div class="card-header card-header-custom">
+                            <i class="fas fa-terminal me-2"></i> Generated Command
+                        </div>
+                        <div class="card-body">
+                            <p class="small text-muted">Copy and paste this command into your terminal.</p>
+                            <div class="command-box mb-3" id="commandOutput">python shift_experiment.py ...</div>
+                            <button class="btn btn-fit w-100" onclick="copyToClipboard()">
+                                <i class="fas fa-copy me-2"></i> Copy Command
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center py-4 text-muted small">
+        Distribution-Shift-Lane-Perception GUI Generator
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('configForm');
+            const inputs = form.querySelectorAll('.param-input');
+            const shiftSelect = document.getElementById('shiftType');
+            const paramContainer = document.getElementById('shiftParamsContainer');
+            const allShiftParams = document.querySelectorAll('.shift-param');
+
+            // List of standard arguments mapped from input name to CLI flag
+            const argMap = {
+                'source': '--source',
+                'target': '--target',
+                'src_split': '--src_split',
+                'tgt_split': '--tgt_split',
+                'src_samples': '--src_samples',
+                'tgt_samples': '--tgt_samples',
+                'num_runs': '--num_runs',
+                'block_idx': '--block_idx',
+                'seed_base': '--seed_base',
+                'batch_size': '--batch_size',
+                'num_calib': '--num_calib',
+                'alpha': '--alpha',
+                'file_location': '--file_location',
+                'file_name': '--file_name'
+            };
+
+            function updateVisibility() {
+                const selectedShift = shiftSelect.value;
+                
+                // Hide all specific params first
+                allShiftParams.forEach(el => el.classList.add('d-none'));
+                
+                if (selectedShift) {
+                    paramContainer.classList.remove('d-none');
+                    const specificParam = document.getElementById(`param-${selectedShift}`);
+                    if (specificParam) {
+                        specificParam.classList.remove('d-none');
+                    }
+                } else {
+                    paramContainer.classList.add('d-none');
+                }
+                generateCommand();
+            }
+
+            function generateCommand() {
+                let cmd = ["python shift_experiment.py"];
+                
+                // 1. Add Standard Args
+                for (const [name, flag] of Object.entries(argMap)) {
+                    const element = form.querySelector(`[name="${name}"]`);
+                    if (element && element.value.trim() !== "") {
+                        // Optional: Only add if different from default? 
+                        // For safety/clarity, we usually add explicit args if user can see them.
+                        cmd.push(`${flag} ${element.value}`);
+                    }
+                }
+
+                // 2. Handle Shift
+                const shiftVal = shiftSelect.value;
+                if (shiftVal) {
+                    cmd.push(`--shift ${shiftVal}`);
+                    
+                    // Handle specific logic based on README table
+                    if (shiftVal === 'gaussian') {
+                        const val = form.querySelector('[name="std"]').value;
+                        cmd.push(`--std ${val}`);
+                    }
+                    else if (shiftVal === 'rotation_shift') {
+                        const val = form.querySelector('[name="rotation_angle"]').value;
+                        cmd.push(`--rotation_angle ${val}`);
+                    }
+                    else if (shiftVal === 'shear_shift') {
+                        const val = form.querySelector('[name="shear_angle"]').value;
+                        cmd.push(`--shear_angle ${val}`);
+                    }
+                    else if (shiftVal === 'zoom_shift') {
+                        const val = form.querySelector('[name="zoom_factor"]').value;
+                        cmd.push(`--zoom_factor ${val}`);
+                    }
+                    else if (shiftVal === 'translation_shift') {
+                        const wVal = form.querySelector('[name="width_shift_frac"]').value;
+                        const hVal = form.querySelector('[name="height_shift_frac"]').value;
+                        if(wVal) cmd.push(`--width_shift_frac ${wVal}`);
+                        if(hVal) cmd.push(`--height_shift_frac ${hVal}`);
+                    }
+                    // Flips have no extra params
+                }
+
+                // 3. Update Display
+                document.getElementById('commandOutput').innerText = cmd.join(" \\\n    ");
+            }
+
+            // Event Listeners
+            inputs.forEach(input => {
+                input.addEventListener('input', generateCommand);
+            });
+            
+            shiftSelect.addEventListener('change', updateVisibility);
+
+            // Initialize
+            updateVisibility();
+        });
+
+        function copyToClipboard() {
+            const text = document.getElementById('commandOutput').innerText.replace(/\\\n    /g, " "); // remove newlines for copy
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.btn-fit');
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check me-2"></i> Copied!';
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
